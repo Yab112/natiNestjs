@@ -29,20 +29,29 @@ export class BorrowService {
   }
 
   // Return a borrowed book
-  async returnBook(borrowId: string, data: { returnDate: Date }) {
+  async returnBook(borrowId: string, returnBookDto: { returnDate: string }) {
     const borrowRecord = await this.borrowRecordModel.findById(borrowId).populate('book');
     if (!borrowRecord) throw new NotFoundException('Borrow record not found');
 
-    borrowRecord.returnDate = data.returnDate;
-    borrowRecord.overdue = data.returnDate > borrowRecord.borrowDate; 
+    // Update the return date
+    borrowRecord.returnDate = new Date(returnBookDto.returnDate);
+
+    // Check if the book is overdue
+    if (borrowRecord.returnDate > new Date()) {
+      borrowRecord.overdue = false; 
+    } else {
+      borrowRecord.overdue = true;
+    }
+
+    // Save the updated record
     await borrowRecord.save();
 
-    // Update the book availability
-    const book = borrowRecord.book as unknown as BookDocument;
-    book.availableCopies += 1; 
+    // Mark the book as available again
+    const book = borrowRecord.book as any; 
+    book.available = true;
     await book.save();
 
-    return borrowRecord;
+    return borrowRecord; 
   }
 
   // Borrow a book (create borrow record)
@@ -72,4 +81,5 @@ export class BorrowService {
 
     return borrowRecord.save();
   }
+
 }
