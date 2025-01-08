@@ -18,6 +18,10 @@ A Library Management System built with NestJS framework. This system helps libra
 ## Project setup
 
 
+# Clone the repository
+$ git clone https://github.com/Yab112/natiNestjs.git
+
+# Install dependencies
 $ pnpm install
 
 
@@ -80,4 +84,4 @@ JWT_SECRET=your_jwt_secret
 
 ## License
 
-This project is [MIT licensed](LICENSE).
+This project is [Addis Ababa licensed](LICENSE).
